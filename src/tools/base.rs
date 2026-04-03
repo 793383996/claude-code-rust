@@ -202,6 +202,7 @@ impl ToolBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use super::super::types::{ToolCategory, ToolPermissionLevel};
     
     struct TestTool;
     
@@ -229,7 +230,7 @@ mod tests {
         
         assert_eq!(metadata.name, "test");
         assert_eq!(metadata.description, "Test tool");
-        assert_eq!(metadata.category, types::ToolCategory::Other);
+        assert_eq!(metadata.category, ToolCategory::Other);
     }
     
     #[test]
@@ -243,14 +244,14 @@ mod tests {
     #[test]
     fn test_tool_builder() {
         let metadata = ToolBuilder::new("read", "Read file")
-            .category(types::ToolCategory::FileOperation)
-            .permission_level(types::ToolPermissionLevel::Standard)
+            .category(ToolCategory::FileOperation)
+            .permission_level(ToolPermissionLevel::Standard)
             .aliases(vec!["r".to_string()])
             .read_only()
             .build_metadata();
         
         assert_eq!(metadata.name, "read");
-        assert_eq!(metadata.category, types::ToolCategory::FileOperation);
+        assert_eq!(metadata.category, ToolCategory::FileOperation);
         assert!(metadata.is_read_only);
         assert_eq!(metadata.aliases, Some(vec!["r".to_string()]));
     }

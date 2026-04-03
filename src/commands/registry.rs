@@ -19,6 +19,7 @@ pub trait CommandExecutor: Send + Sync {
 }
 
 /// 命令注册表
+#[derive(Clone)]
 pub struct CommandRegistry {
     /// 命令映射（名称 -> 执行器）
     commands: Arc<RwLock<HashMap<String, Arc<dyn CommandExecutor>>>>,

@@ -1,5 +1,8 @@
 //! MCP (Model Context Protocol) integration
 
+pub mod protocol;
+pub mod client;
+
 use crate::error::Result;
 use crate::state::AppState;
 use serde::{Deserialize, Serialize};

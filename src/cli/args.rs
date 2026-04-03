@@ -46,9 +46,6 @@ impl Cli {
             Some(super::Commands::Update) => {
                 self.run_update()?;
             }
-            Some(super::Commands::Help { topic }) => {
-                self.run_help(topic.clone())?;
-            }
             Some(super::Commands::Services { action }) => {
                 self.run_services(state, action).await?;
             }
@@ -322,13 +319,7 @@ impl Cli {
         Ok(())
     }
 
-    fn run_help(&self, topic: Option<String>) -> anyhow::Result<()> {
-        match topic {
-            Some(t) => println!("Help for topic: {}", t),
-            None => println!("Use --help for detailed usage information"),
-        }
-        Ok(())
-    }
+
 
     async fn run_services(&self, state: crate::state::AppState, action: &super::ServiceCommands) -> anyhow::Result<()> {
         let state = Arc::new(RwLock::new(state));

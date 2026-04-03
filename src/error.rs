@@ -1,6 +1,7 @@
 //! Error types for Claude Code
 
 use std::fmt;
+use libloading;
 
 /// Result type for Claude Code operations
 pub type Result<T> = std::result::Result<T, ClaudeError>;
@@ -123,5 +124,35 @@ impl From<&str> for ClaudeError {
 impl From<String> for ClaudeError {
     fn from(msg: String) -> Self {
         ClaudeError::Other(msg)
+    }
+}
+
+impl From<url::ParseError> for ClaudeError {
+    fn from(err: url::ParseError) -> Self {
+        ClaudeError::Other(err.to_string())
+    }
+}
+
+impl From<tokio_tungstenite::tungstenite::Error> for ClaudeError {
+    fn from(err: tokio_tungstenite::tungstenite::Error) -> Self {
+        ClaudeError::Mcp(err.to_string())
+    }
+}
+
+impl<T> From<tokio::sync::mpsc::error::SendError<T>> for ClaudeError {
+    fn from(err: tokio::sync::mpsc::error::SendError<T>) -> Self {
+        ClaudeError::Other(err.to_string())
+    }
+}
+
+impl<T> From<tokio::sync::broadcast::error::SendError<T>> for ClaudeError {
+    fn from(err: tokio::sync::broadcast::error::SendError<T>) -> Self {
+        ClaudeError::Other(err.to_string())
+    }
+}
+
+impl From<libloading::Error> for ClaudeError {
+    fn from(err: libloading::Error) -> Self {
+        ClaudeError::Tool(err.to_string())
     }
 }

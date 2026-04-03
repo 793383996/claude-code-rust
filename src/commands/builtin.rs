@@ -453,3 +453,32 @@ mod tests {
         assert_eq!(command.description(), "Show help information");
     }
 }
+
+/// 加载内置命令
+pub fn load_builtin_commands(manager: &mut crate::commands::registry::CommandManager) {
+    // 注册内置命令
+    manager.add_loader(BuiltinCommandLoader);
+}
+
+/// 内置命令加载器
+struct BuiltinCommandLoader;
+
+#[async_trait::async_trait]
+impl crate::commands::registry::CommandLoader for BuiltinCommandLoader {
+    async fn load(&self, registry: &crate::commands::registry::CommandRegistry) -> crate::error::Result<()> {
+        // 注册核心命令
+        registry.register(VersionCommand).await;
+        registry.register(HelpCommand).await;
+        registry.register(ClearCommand).await;
+        registry.register(ExitCommand).await;
+        registry.register(ConfigCommand).await;
+        registry.register(McpCommand).await;
+        registry.register(StatusCommand).await;
+        
+        Ok(())
+    }
+    
+    fn name(&self) -> &str {
+        "builtin"
+    }
+}

@@ -105,12 +105,7 @@ pub enum Commands {
     /// Update to latest version
     Update,
 
-    /// Show help and usage information
-    Help {
-        /// Topic to show help for
-        #[arg(short, long)]
-        topic: Option<String>,
-    },
+
 
     /// Manage background services
     Services {

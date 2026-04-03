@@ -12,7 +12,6 @@
     unused_import_braces,
     unused_qualifications
 )]
-#![forbid(unsafe_code)]
 
 pub mod commands;
 pub mod config;
@@ -31,6 +30,8 @@ pub mod bootstrap;
 pub mod services;
 pub mod performance;
 pub mod security;
+pub mod api;
+pub mod plugins;
 
 // Re-export commonly used types
 pub use error::{ClaudeError, Result};

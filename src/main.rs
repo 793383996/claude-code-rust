@@ -58,10 +58,7 @@ enum Commands {
     
     /// Show version information
     Version,
-    
-    /// Show help information
-    Help,
-    
+
     /// Bridge mode (remote control)
     #[cfg(feature = "bridge")]
     Bridge,
@@ -77,9 +74,63 @@ enum Commands {
     #[cfg(feature = "voice")]
     Voice,
     
+    /// Plugin commands
+    #[cfg(feature = "plugins")]
+    Plugins {
+        #[command(subcommand)]
+        subcommand: PluginCommands,
+    },
+    
+    /// Analytics commands
+    Analytics {
+        #[command(subcommand)]
+        subcommand: AnalyticsCommands,
+    },
+    
     /// Run as daemon
     #[cfg(feature = "daemon")]
     Daemon,
+}
+
+/// Analytics subcommands
+#[derive(Subcommand, Debug)]
+enum AnalyticsCommands {
+    /// Show performance report
+    Performance,
+}
+
+/// Plugin subcommands
+#[derive(Subcommand, Debug)]
+enum PluginCommands {
+    /// List all plugins
+    List,
+    
+    /// Load a plugin
+    Load {
+        /// Plugin path
+        path: String,
+    },
+    
+    /// Unload a plugin
+    Unload {
+        /// Plugin name
+        name: String,
+    },
+    
+    /// Start a plugin
+    Start {
+        /// Plugin name
+        name: String,
+    },
+    
+    /// Stop a plugin
+    Stop {
+        /// Plugin name
+        name: String,
+    },
+    
+    /// Scan for plugins
+    Scan,
 }
 
 /// MCP subcommands
@@ -173,10 +224,6 @@ async fn run(cli: Cli) -> Result<()> {
             commands::auth::logout(settings).await?;
         }
         
-        Some(Commands::Help) => {
-            print_help();
-        }
-        
         #[cfg(feature = "bridge")]
         Some(Commands::Bridge) => {
             commands::bridge::run(state).await?;
@@ -203,6 +250,38 @@ async fn run(cli: Cli) -> Result<()> {
         #[cfg(feature = "voice")]
         Some(Commands::Voice) => {
             commands::voice::run(state).await?;
+        }
+        
+        #[cfg(feature = "plugins")]
+        Some(Commands::Plugins { subcommand }) => {
+            match subcommand {
+                PluginCommands::List => {
+                    commands::plugins::list_plugins(state).await?;
+                }
+                PluginCommands::Load { path } => {
+                    commands::plugins::load_plugin(path, state).await?;
+                }
+                PluginCommands::Unload { name } => {
+                    commands::plugins::unload_plugin(name, state).await?;
+                }
+                PluginCommands::Start { name } => {
+                    commands::plugins::start_plugin(name, state).await?;
+                }
+                PluginCommands::Stop { name } => {
+                    commands::plugins::stop_plugin(name, state).await?;
+                }
+                PluginCommands::Scan => {
+                    commands::plugins::scan_plugins(state).await?;
+                }
+            }
+        }
+        
+        Some(Commands::Analytics { subcommand }) => {
+            match subcommand {
+                AnalyticsCommands::Performance => {
+                    commands::analytics::show_performance_report(state).await?;
+                }
+            }
         }
         
         #[cfg(feature = "daemon")]
@@ -240,6 +319,9 @@ fn print_help() {
     println!("  mcp               MCP server management commands");
     #[cfg(feature = "voice")]
     println!("  voice             Voice interaction mode");
+    #[cfg(feature = "plugins")]
+    println!("  plugins           Plugin management commands");
+    println!("  analytics         Analytics and performance commands");
     #[cfg(feature = "daemon")]
     println!("  daemon            Run as daemon service");
 }

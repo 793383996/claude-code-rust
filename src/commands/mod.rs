@@ -10,6 +10,7 @@ pub mod types;
 pub mod registry;
 pub mod executor;
 pub mod builtin;
+pub mod cli;
 
 // CLI 命令模块
 pub mod interactive;
@@ -17,6 +18,10 @@ pub mod query;
 pub mod config;
 pub mod auth;
 pub mod ultraplan;
+pub mod voice;
+pub mod mcp;
+pub mod plugins;
+pub mod analytics;
 
 // 重新导出主要类型
 pub use types::{Command, CommandContext, CommandResult, CommandBase};
@@ -29,6 +34,9 @@ pub use builtin::{
 pub use ultraplan::{
     UltraplanService, UltraplanConfig, UltraplanSession, UltraplanPhase,
     UltraplanResult, ExecutionTarget, PlanEvaluation, build_ultraplan_prompt,
+};
+pub use cli::{
+    CommandHistory, CommandCompleter, ColorOutput, CliInterface, BatchProcessor,
 };
 
 use crate::error::Result;
